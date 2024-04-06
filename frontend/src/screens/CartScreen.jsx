@@ -19,6 +19,7 @@ import Meta from '../components/Meta';
 const CartScreen = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { userInfo } = useSelector((state) => state.auth);
 
   const cart = useSelector((state) => state.cart);
   const addToCartHandler = (product, qty) => {
@@ -30,7 +31,12 @@ const CartScreen = () => {
   const { cartItems } = cart;
 
   const checkOutHandler = () => {
-    navigate('/login?redirect=shipping');
+    if (userInfo) {
+      navigate('/shipping');
+    } else {
+      navigate('/login');
+    }
+    // navigate('/login?redirect=shipping');
   };
   return (
     <>
@@ -49,7 +55,12 @@ const CartScreen = () => {
                 <ListGroup.Item key={item._id}>
                   <Row>
                     <Col md={2}>
-                      <Image src={item.image} alt={item.name} fluid rounded />
+                      <Image
+                        src={item.image.url}
+                        alt={item.name}
+                        fluid
+                        rounded
+                      />
                     </Col>
                     <Col md={3}>
                       <Link to={`/product/${item._id}`}>{item.name}</Link>

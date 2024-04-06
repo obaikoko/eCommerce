@@ -1,5 +1,6 @@
 import Product from '../models/productModel.js';
 import asyncHandler from '../middleware/asyncHandler.js';
+import cloudinary from '../config/cloudinary.js';
 
 // @desc Gets all products
 // @route GET /api/products
@@ -46,7 +47,9 @@ const createProduct = asyncHandler(async (req, res) => {
     name: 'Sample name',
     price: 0,
     user: req.user._id,
-    image: '/images/sample.jpg',
+    image: {
+      url: '/images/sample.jpg',
+    },
     brand: 'Sample brand',
     category: 'Sample category',
     countInStock: 0,
@@ -64,14 +67,33 @@ const createProduct = asyncHandler(async (req, res) => {
 const updateProduct = asyncHandler(async (req, res) => {
   const { name, price, description, image, brand, category, countInStock } =
     req.body;
-
+  if (!image) {
+    throw new Error('Please attach an image');
+  }
   const product = await Product.findById(req.params.id);
+
+  // replace the old image with the new image by extrating only the publicID with out the path
+  const existingImageId = product?.image?.publicId || '';
+
+  const newImageId = existingImageId.substring(
+    existingImageId.indexOf('eCommerce') + 'eCommerce/'.length
+  );
+
+  const uploadedResponse = await cloudinary.uploader.upload(image, {
+    folder: 'eCommerce',
+    upload_preset: 'eCommerce',
+    public_id: newImageId,
+    transformation: [{ width: 640, height: 510, crop: 'scale' }],
+  });
 
   if (product) {
     product.name = name;
     product.price = price;
     product.description = description;
-    product.image = image;
+    product.image = {
+      url: uploadedResponse.url,
+      publicId: uploadedResponse.public_id,
+    };
     product.brand = brand;
     product.category = category;
     product.countInStock = countInStock;
@@ -91,6 +113,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id);
 
   if (product) {
+    await cloudinary.uploader.destroy(product.image.publicId);
     await Product.deleteOne({ _id: product._id });
     res.json({ message: 'Product removed' });
   } else {

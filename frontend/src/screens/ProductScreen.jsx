@@ -44,6 +44,7 @@ const ProductScreen = () => {
 
   const addToCartHandler = () => {
     dispatch(addToCart({ ...product, qty }));
+    toast.success(`${product.name} added to cart`);
     navigate('/');
   };
 
@@ -74,14 +75,14 @@ const ProductScreen = () => {
         </Message>
       ) : (
         <>
-        <Meta title={product.name} />
+          <Meta title={product.name} />
           <Link className='btn btn-light my-3' to='/'>
             Go Back
           </Link>
 
           <Row>
             <Col md={5}>
-              <Image src={product.image} alt={product.name} fluid />
+              <Image src={product.image.url} alt={product.name} fluid />
             </Col>
             <Col md={4}>
               <ListGroup variant='flush'>
