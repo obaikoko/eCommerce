@@ -176,12 +176,14 @@ const ProductScreen = () => {
                   </ListGroup.Item>
                 ))}
                 <ListGroup.Item>
-                  <h2>Write a Customer Review</h2>
+                 
 
                   {loadingProductReview && <Loader />}
 
-                  {userInfo ? (
+                  {userInfo && (
+                    
                     <Form onSubmit={submitHandler}>
+                       <h2>Write a Customer Review</h2>
                       <Form.Group className='my-2' controlId='rating'>
                         <Form.Label>Rating</Form.Label>
                         <Form.Control
@@ -216,10 +218,6 @@ const ProductScreen = () => {
                         Submit
                       </Button>
                     </Form>
-                  ) : (
-                    <Message>
-                      Please <Link to='/login'>sign in</Link> to write a review
-                    </Message>
                   )}
                 </ListGroup.Item>
               </ListGroup>

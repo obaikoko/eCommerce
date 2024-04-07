@@ -18,7 +18,6 @@ const ProductEditScreen = () => {
   const [formData, setFormData] = useState({
     name: '',
     price: 0,
-
     brand: '',
     category: '',
     countInStock: '',

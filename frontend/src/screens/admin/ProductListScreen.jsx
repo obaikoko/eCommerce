@@ -78,7 +78,8 @@ const ProductListScreen = () => {
                 <th>PRICE</th>
                 <th>CATEGORY</th>
                 <th>BRAND</th>
-                <th></th>
+                <th>EDIT</th>
+                <th>DELETE</th>
               </tr>
             </thead>
             <tbody>
@@ -95,6 +96,8 @@ const ProductListScreen = () => {
                         <FaEdit />
                       </Button>
                     </LinkContainer>
+                  </td>
+                  <td>
                     <Button
                       variant='danger'
                       className='btn-sm'
