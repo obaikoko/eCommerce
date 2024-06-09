@@ -13,7 +13,7 @@ const HomeScreen = () => {
     keyword,
     pageNumber,
   });
-  console.log(error);
+ 
 
   return (
     <>

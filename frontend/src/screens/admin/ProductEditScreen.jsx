@@ -10,6 +10,7 @@ import {
   useUpdateProductMutation,
 } from '../../features/slices/productsApiSlice';
 import Meta from '../../components/Meta';
+import Resizer from 'react-image-file-resizer';
 
 const ProductEditScreen = () => {
   const { id: productId } = useParams();
@@ -43,15 +44,33 @@ const ProductEditScreen = () => {
     }));
   };
 
-  const handleImageChange = (event) => {
+  const resizeFile = (file) =>
+    new Promise((resolve) => {
+      Resizer.imageFileResizer(
+        file,
+        640,
+        510,
+        'JPEG',
+        70,
+        0,
+        (uri) => {
+          resolve(uri);
+        },
+        'base64'
+      );
+    });
+
+  const handleImageChange = async (event) => {
     const file = event.target.files[0];
 
     if (file) {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = () => {
-        setImage(reader.result);
-      };
+      try {
+        const resizedImage = await resizeFile(file);
+        setImage(resizedImage);
+      } catch (error) {
+        toast.error('Error resizing image');
+        console.error('Error resizing image:', error);
+      }
     }
   };
 
